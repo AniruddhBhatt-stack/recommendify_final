@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Recommendify Dashboard</title>
+  <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+      
+      body, html {
+          margin: 0;
+          padding: 0;
+          font-family: 'Inter', sans-serif;
+          background-color: #0a0a0a;
+          color: #ffffff;
+          height: 100%;
+          overflow-x: hidden;
+      }
+      
+      .container {
+          position: relative;
+          min-height: 100vh;
+          padding: 20px;
+          z-index: 1;
+      }
+      
+      .aurora-bg {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+          z-index: -1;
+          overflow: hidden;
+      }
+      
+      .aurora-light {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          background: radial-gradient(ellipse at center, rgba(29, 148, 74, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
+          filter: blur(80px);
+          animation: aurora-move 20s infinite alternate;
+      }
+      
+      .aurora-light-pink {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          background: radial-gradient(ellipse at top left, rgba(255, 105, 180, 0.1) 0%, rgba(0, 0, 0, 0) 70%);
+          filter: blur(80px);
+          animation: aurora-move-reverse 25s infinite alternate;
+      }
+      
+      .aurora-light-orange {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          background: radial-gradient(ellipse at bottom right, rgba(255, 140, 0, 0.1) 0%, rgba(0, 0, 0, 0) 70%);
+          filter: blur(80px);
+          animation: aurora-move-alt 30s infinite alternate;
+      }
+      
+      @keyframes aurora-move {
+          0% { transform: translate(-25%, -25%); }
+          100% { transform: translate(25%, 25%); }
+      }
+      
+      @keyframes aurora-move-reverse {
+          0% { transform: translate(25%, 25%); }
+          100% { transform: translate(-25%, -25%); }
+      }
+      
+      @keyframes aurora-move-alt {
+          0% { transform: translate(15%, -15%); }
+          100% { transform: translate(-15%, 15%); }
+      }
+      
+      .header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 40px;
+      }
+      
+      .logo {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          font-size: 28px;
+          font-weight: 700;
+      }
+      
+      .logo-text {
+          color: #1ED760;
+      }
+      
+      .user-controls {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+      }
+      
+      .user-welcome {
+          background: rgba(0, 128, 0, 0.1);
+          border: 1px solid rgba(30, 215, 96, 0.3);
+          border-radius: 20px;
+          padding: 8px 16px;
+          color: #1ED760;
+          font-size: 14px;
+      }
+      
+      .logout-btn {
+          background-color: rgba(255, 75, 75, 0.2);
+          color: #FF4B4B;
+          border: 1px solid rgba(255, 75, 75, 0.4);
+          border-radius: 20px;
+          padding: 8px 16px;
+          font-size: 14px;
+          cursor: pointer;
+          transition: all 0.3s ease;
+      }
+      
+      .logout-btn:hover {
+          background-color: rgba(255, 75, 75, 0.3);
+      }
+      
+      .section-title {
+          color: #1ED760;
+          font-size: 16px;
+          margin-bottom: 20px;
+      }
+      
+      .song-grid {
+          display: grid;
+          grid-template-columns: repeat(5, 1fr);
+          grid-template-rows: repeat(2, auto);
+          gap: 20px;
+          margin-bottom: 40px;
+      }
+      
+      .song-card {
+          background: rgba(255, 255, 255, 0.05);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 12px;
+          overflow: hidden;
+          transition: all 0.3s ease;
+      }
+      
+      .song-card:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+          border-color: rgba(30, 215, 96, 0.3);
+      }
+      
+      .song-image {
+          width: 100%;
+          aspect-ratio: 1;
+          object-fit: cover;
+      }
+      
+      .song-info {
+          padding: 12px;
+      }
+      
+      .song-title {
+          color: #1ED760;
+          font-size: 14px;
+          font-weight: 600;
+          margin-bottom: 4px;
+      }
+      
+      .song-artist {
+          color: #ccc;
+          font-size: 12px;
+          margin-bottom: 8px;
+      }
+      
+      .listen-on {
+          color: #888;
+          font-size: 11px;
+          display: flex;
+          align-items: center;
+          gap: 4px;
+      }
+      
+      .genre-selection {
+          margin: 0 auto 40px;
+          max-width: 800px;
+      }
+      
+      .genre-dropdown {
+          width: 100%;
+          background: rgba(255, 255, 255, 0.05);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 8px;
+          padding: 12px 16px;
+          color: #fff;
+          margin-bottom: 10px;
+          appearance: none;
+          cursor: pointer;
+      }
+      
+      .genre-dropdown:focus {
+          outline: none;
+          border-color: rgba(30, 215, 96, 0.5);
+      }
+      
+      .get-recs-btn {
+          background-color: #1ED760;
+          color: #000;
+          border: none;
+          border-radius: 30px;
+          padding: 12px 24px;
+          font-size: 16px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.3s ease;
+      }
+      
+      .get-recs-btn:hover {
+          background-color: #19b352;
+          transform: scale(1.05);
+      }
+      
+      .music-note {
+          font-size: 24px;
+      }
+      
+      .selected-genres {
+          margin-bottom: 40px;
+      }
+      
+      .genre-list {
+          list-style-type: none;
+          padding-left: 20px;
+          margin-top: 10px;
+      }
+      
+      .genre-list li {
+          margin-bottom: 8px;
+          display: flex;
+          align-items: center;
+      }
+      
+      .genre-list li::before {
+          content: "•";
+          color: #FF6B6B;
+          margin-right: 10px;
+          font-size: 20px;
+      }
+      
+      .genre-list li:nth-child(2n)::before {
+          color: #FF8C00;
+      }
+      
+      .recommended-tracks {
+          margin-bottom: 40px;
+      }
+      
+      .track-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+          gap: 20px;
+      }
+      
+      .track-card {
+          background: rgba(255, 255, 255, 0.05);
+          border: 1px solid rgba(0, 200, 80, 0.2);
+          border-radius: 12px;
+          overflow: hidden;
+          transition: all 0.3s ease;
+      }
+      
+      .track-card:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+      }
+      
+      .track-image {
+          width: 100%;
+          aspect-ratio: 1;
+          object-fit: cover;
+      }
+      
+      .track-info {
+          padding: 12px;
+      }
+      
+      .track-title {
+          color: #1ED760;
+          font-size: 14px;
+          font-weight: 600;
+          margin-bottom: 4px;
+      }
+      
+      .playlist-link {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          color: #1ED760;
+          font-size: 14px;
+          text-decoration: none;
+          margin-top: 20px;
+          transition: all 0.3s ease;
+      }
+      
+      .playlist-link:hover {
+          color: #19b352;
+          text-decoration: underline;
+      }
+      
+      /* Responsive adjustments */
+      @media (max-width: 1024px) {
+          .song-grid {
+              grid-template-columns: repeat(3, 1fr);
+          }
+      }
+      
+      @media (max-width: 768px) {
+          .song-grid {
+              grid-template-columns: repeat(2, 1fr);
+          }
+          
+          .header {
+              flex-direction: column;
+              align-items: flex-start;
+              gap: 15px;
+          }
+          
+          .user-controls {
+              width: 100%;
+              justify-content: flex-end;
+          }
+      }
+      
+      @media (max-width: 480px) {
+          .song-grid, .track-grid {
+              grid-template-columns: 1fr;
+          }
+      }
+  </style>
+</head>
+<body>
+  <div class="aurora-bg">
+      <div class="aurora-light"></div>
+      <div class="aurora-light-pink"></div>
+      <div class="aurora-light-orange"></div>
+  </div>
+  
+  <div class="container">
+      <!-- Header with Logo and Logout -->
+      <div class="header">
+          <div class="logo">
+              <span class="music-note">🎵</span>
+              <span class="logo-text">Recommendify Dashboard</span>
+          </div>
+          <div class="user-controls">
+              <div class="user-welcome">Welcome, {{ display_name }}!</div>
+              <form method="POST" action="/logout" style="display: inline;">
+                  <button type="submit" class="logout-btn">Logout</button>
+              </form>
+          </div>
+      </div>
+      
+      <!-- Your Top 10 Songs Section -->
+      <div class="songs-section">
+          <h2 class="section-title">Your Top 10 Songs:</h2>
+          <div class="song-grid">
+            {% if top_songs %}
+              {% for song in top_songs %}
+                <div class="song-card">
+                    <img src="{{ song.image or '/api/placeholder/180/180' }}" alt="{{ song.name }}" class="song-image" />
+                    <div class="song-info">
+                        <div class="song-title">{{ song.name }}</div>
+                        <div class="song-artist">{{ song.artist }}</div>
+                        <div class="listen-on">
+                          <a href="{{ song.url }}" target="_blank" style="color: inherit; text-decoration: none;">Listen on Spotify</a>
+                        </div>
+                    </div>
+                </div>
+              {% endfor %}
+            {% elif top_tracks %}
+              {% for song in top_tracks %}
+                <div class="song-card">
+                    <img src="{{ song.album_image or '/api/placeholder/180/180' }}" alt="{{ song.name }}" class="song-image" />
+                    <div class="song-info">
+                        <div class="song-title">{{ song.name }}</div>
+                        <div class="song-artist">{{ song.artist }}</div>
+                        <div class="listen-on">
+                          <a href="{{ song.external_url }}" target="_blank" style="color: inherit; text-decoration: none;">Listen on Spotify</a>
+                        </div>
+                    </div>
+                </div>
+              {% endfor %}
+            {% else %}
+              <p>No top songs available.</p>
+            {% endif %}
+          </div>
+      </div>
+      
+      <!-- Genre Selection Section -->
+      <div class="genre-selection">
+          <h2 class="section-title">Select 5 Genres:</h2>
+          <form method="POST" action="/recommend">
+              {% for i in range(1,6) %}
+                <select class="genre-dropdown" name="genre{{ i }}">
+                    <option value="">Select a genre</option>
+                    {% for genre in genres %}
+                        <option value="{{ genre }}" 
+                          {% if selected_genres and genre in selected_genres %}selected{% endif %}>{{ genre|capitalize }}</option>
+                    {% endfor %}
+                </select>
+              {% endfor %}
+              <button type="submit" class="get-recs-btn">Get Recommendations</button>
+          </form>
+      </div>
+      
+      <!-- Selected Genres Section -->
+      {% if selected_genres %}
+      <div class="selected-genres">
+          <h2 class="section-title">Selected Genres:</h2>
+          <ul class="genre-list">
+              {% for genre in selected_genres %}
+                <li>{{ genre|capitalize }}</li>
+              {% endfor %}
+          </ul>
+      </div>
+      {% endif %}
+      
+      <!-- Recommended Tracks Section -->
+      {% if tracks %}
+      <div class="recommended-tracks">
+          <h2 class="section-title">Recommended Tracks:</h2>
+          <div class="track-grid">
+              {% for track in tracks %}
+                <div class="track-card">
+                    <img src="{{ track.album_image or '/api/placeholder/180/180' }}" alt="{{ track.name }}" class="track-image" />
+                    <div class="track-info">
+                        <div class="track-title">{{ track.name }}</div>
+                        <div class="listen-on">
+                          <a href="{{ track.external_url }}" target="_blank" style="color: inherit; text-decoration: none;">Listen on Spotify</a>
+                        </div>
+                    </div>
+                </div>
+              {% endfor %}
+          </div>
+      </div>
+      {% endif %}
+      
+      <!-- Playlist Link -->
+      {% if playlist_url %}
+      <a href="{{ playlist_url }}" target="_blank" class="playlist-link">
+          <span class="music-note">🎵</span> View "{{ display_name }}'s love" Playlist on Spotify
+      </a>
+      {% endif %}
+  </div>
+</body>
+</html>
